@@ -19,6 +19,7 @@ public class EscapeSeq {
     public final static int ESC = 27; //^[
     public final static int BRACKET = 91; //[
     public final static int TILDE = 126; //~
+    public final static int CR = 13; //cr
 
     //
     public final static int EMPTY = -1;

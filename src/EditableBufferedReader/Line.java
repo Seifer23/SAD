@@ -72,7 +72,6 @@ public class Line{
         numChar--;
         if(posX>numChar)
         posX=numChar;
-        int t = 2;
     }
 
     public void move(int direction){
@@ -119,6 +118,10 @@ public class Line{
 
     public void switchOverwrite(){
         replace = !replace;
+    }
+
+    public char[] getLine(){
+        return line;
     }
 
 }

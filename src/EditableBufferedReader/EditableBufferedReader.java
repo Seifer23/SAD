@@ -57,6 +57,8 @@ class EditableBufferedReader extends BufferedReader{
       int charac = super.read();
       if(charac == EscapeSeq.DELETE) 
         return -charac;
+      if(charac == EscapeSeq.CR)
+        return EscapeSeq.ENTER;
       if(charac != EscapeSeq.ESC)
         return charac;
       charac = super.read();
@@ -88,12 +90,9 @@ class EditableBufferedReader extends BufferedReader{
           case (-EscapeSeq.RIGHT):
             linia.move(Line.RIGHT);
             break;
-
           case (-EscapeSeq.ENTER):
             linia.move(Line.END);
-            this.unsetRaw();
             break;
-
           case(-EscapeSeq.END):
           case(-EscapeSeq.DOWN):
             linia.move(Line.END);
@@ -116,10 +115,10 @@ class EditableBufferedReader extends BufferedReader{
           
           case(-EscapeSeq.DELETE):
             linia.deleteChar(true);
+            break;
 
           default:
-
-            if(charac > 0)
+            if(charac > 0 && charac != 13) //CR posat manualment
               linia.addChar((char) charac);
             break;
         }
@@ -129,9 +128,10 @@ class EditableBufferedReader extends BufferedReader{
     } catch(IOException e){
       throw e;
     }
-    
+    linia.move(Line.END);
+    linia.addChar((char) 13);
+    linia.printLine();
     this.unsetRaw();
-
     return linia.toString();
   }
 }
