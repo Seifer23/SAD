@@ -11,8 +11,8 @@ public class EscapeSeq {
     public final static int SUPR = 51; //3
     public final static int DELETE = 127;
     public final static int ENTER = 13; //enter
-    public final static int UP = 65;
-    public final static int DOWN = 66;
+    public final static int UP = 65;//A
+    public final static int DOWN = 66;//B
     public final static int CTLRC = 3;
 
     //CARÀCTERS IMPORTANTS

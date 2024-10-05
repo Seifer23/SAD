@@ -55,24 +55,24 @@ public class Line{
         }
     }
 
-    public void deleteChar(int dir){
+    public void deleteChar(boolean delete){
 
         if(numChar == 0)
             return;
-        if(dir == LEFT && posX > 0){
-            for(int i = posX; i<numChar; i++){
-                line[i - 1] = line[i];
-            }
-            if(posX > 0) posX--;
-            numChar--;
-        } else if(dir == RIGHT){
-            for(int i = posX; i<numChar-1; i++){
-                line[i+1] = line[i];
-            }
-            numChar--;
-            if(posX > 0) posX--;
-        }
 
+        if(delete){ //si es és borrar normal
+            for(int i = posX-1; i<numChar-1; i++)
+                line[i] = line[i+1];
+            if(posX != 0)
+                posX--;
+        } else { //si és suprimir
+            for(int i = posX; i<numChar-1; i++)
+                line[i] = line[i+1];
+        }
+        numChar--;
+        if(posX>numChar)
+        posX=numChar;
+        int t = 2;
     }
 
     public void move(int direction){

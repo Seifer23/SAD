@@ -55,6 +55,8 @@ class EditableBufferedReader extends BufferedReader{
 
     try{
       int charac = super.read();
+      if(charac == EscapeSeq.DELETE) 
+        return -charac;
       if(charac != EscapeSeq.ESC)
         return charac;
       charac = super.read();
@@ -109,11 +111,11 @@ class EditableBufferedReader extends BufferedReader{
           
           case(-EscapeSeq.SUPR):
             this.read();
-            linia.deleteChar(1);
+            linia.deleteChar(false);
             break;
           
           case(-EscapeSeq.DELETE):
-            linia.deleteChar(0);
+            linia.deleteChar(true);
 
           default:
 
