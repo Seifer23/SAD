@@ -1,4 +1,4 @@
-package SAD;
+package EditableBufferedReader;
 
 public class Line{
 
@@ -26,16 +26,24 @@ public class Line{
 
     public void addChar(char newChar) throws IndexOutOfBoundsException {
 
-        if(numChar == maxChar)
-            throw new IndexOutOfBoundsException("MAX");
-
+        if(numChar == maxChar && !replace)
+            throw new IndexOutOfBoundsException();
+        
         if(replace){
-            //TODO: implement
+
+            if(posX == numChar){
+                if(numChar == maxChar)
+                    throw new IndexOutOfBoundsException();
+                line[posX] = newChar;
+                posX = numChar += 1;
+            } else{
+                line[posX] = newChar;
+                posX++; 
+            }
         }else {
             if(posX == numChar){
                 line[posX] = newChar;
-                numChar++;
-                posX++;
+                posX = numChar += 1;
             } else {
                 for(int i = maxChar - 1; i>posX; i--){
                     line[i] = line[i-1];
@@ -45,9 +53,27 @@ public class Line{
                 numChar++;
             }
         }
-        
     }
 
+    public void deleteChar(int dir){
+
+        if(numChar == 0)
+            return;
+        if(dir == LEFT && posX > 0){
+            for(int i = posX; i<numChar; i++){
+                line[i - 1] = line[i];
+            }
+            if(posX > 0) posX--;
+            numChar--;
+        } else if(dir == RIGHT){
+            for(int i = posX; i<numChar-1; i++){
+                line[i+1] = line[i];
+            }
+            numChar--;
+            if(posX > 0) posX--;
+        }
+
+    }
 
     public void move(int direction){
         switch (direction) {
@@ -70,7 +96,6 @@ public class Line{
         }
     }
 
-
     public String toString(){
         
         String linia = "";
@@ -83,7 +108,7 @@ public class Line{
     }
 
     public void printLine(){
- 
+        
         System.out.print("\033[2K");
         System.out.print("\r");
         String linia = this.toString();

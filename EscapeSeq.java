@@ -1,4 +1,4 @@
-package SAD;
+package EditableBufferedReader;
 
 public class EscapeSeq {
 
@@ -10,12 +10,17 @@ public class EscapeSeq {
     public final static int INSERT = 50; //2
     public final static int SUPR = 51; //3
     public final static int DELETE = 127;
+    public final static int ENTER = 13; //enter
+    public final static int UP = 65;
+    public final static int DOWN = 66;
+    public final static int CTLRC = 3;
 
     //CARÀCTERS IMPORTANTS
     public final static int ESC = 27; //^[
     public final static int BRACKET = 91; //[
     public final static int TILDE = 126; //~
-    public final static int ENTER = 13; //enter
 
+    //
+    public final static int EMPTY = -1;
     
 }

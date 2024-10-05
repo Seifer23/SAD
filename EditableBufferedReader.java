@@ -1,4 +1,4 @@
-package SAD;
+package EditableBufferedReader;
 
 import java.io.Reader;
 import java.io.BufferedReader;
@@ -51,31 +51,24 @@ class EditableBufferedReader extends BufferedReader{
     }
   }
 
-  public int read(){
-     
+  public int read() throws IOException{
+
     try{
-
       int charac = super.read();
-      if(charac != EscapeSeq.ESC){ // Si el següent caràcter no comença per ^[      (ESC)
-        if(charac == 13){
-          return EscapeSeq.ENTER;
-        }
-        return charac;  //enviar el caràcter a readLine()
-      } //si és ^[ tenim dues opcions: EOT i [
+      if(charac != EscapeSeq.ESC)
+        return charac;
       charac = super.read();
-      if(charac == EscapeSeq.BRACKET){ // si la lletra següent és [ 
-        charac = super.read();
-        return charac+1000; //Sumem 1000 al caràcter de després de ^[[
-      }
-
-
-    } catch (IOException ex){
-      return -1;
+      if(charac == EscapeSeq.BRACKET)
+        return -super.read();  
+      else if(charac == EscapeSeq.CTLRC)
+        return EscapeSeq.ENTER;
+    }catch(IOException e){
+      throw e;
     }
-    return -1; //TODO: revisar que el fallback funcioni
+    return EscapeSeq.EMPTY;
   }
 
-  public String readLine(){
+  public String readLine() throws IOException{
 
 
     this.setRaw(); //amaguem el input del teclat
@@ -86,33 +79,53 @@ class EditableBufferedReader extends BufferedReader{
         charac = this.read();
         
         switch (charac) {
-          case (EscapeSeq.LEFT + 1000):
+          case (-EscapeSeq.LEFT):
             linia.move(Line.LEFT);
             break;
           
-          case (EscapeSeq.RIGHT + 1000):
+          case (-EscapeSeq.RIGHT):
             linia.move(Line.RIGHT);
             break;
 
-          case (EscapeSeq.ENTER):
+          case (-EscapeSeq.ENTER):
+            linia.move(Line.END);
             this.unsetRaw();
+            break;
 
-          case(EscapeSeq.END+1000):
-
+          case(-EscapeSeq.END):
+          case(-EscapeSeq.DOWN):
             linia.move(Line.END);
             break;
 
-          case(EscapeSeq.START+1000):
+          case(-EscapeSeq.START):
+          case(-EscapeSeq.UP):
             linia.move(Line.START);
             break;
+
+          case(-EscapeSeq.INSERT):
+            linia.switchOverwrite();
+            this.read();
+            break;        
           
+          case(-EscapeSeq.SUPR):
+            this.read();
+            linia.deleteChar(1);
+            break;
+          
+          case(-EscapeSeq.DELETE):
+            linia.deleteChar(0);
+
           default:
-            linia.addChar((char) charac);
+
+            if(charac > 0)
+              linia.addChar((char) charac);
             break;
         }
         linia.printLine();
       }
-    } catch (IndexOutOfBoundsException ex){
+    } catch(IndexOutOfBoundsException ex){
+    } catch(IOException e){
+      throw e;
     }
     
     this.unsetRaw();
