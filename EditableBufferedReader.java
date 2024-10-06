@@ -6,11 +6,26 @@ import java.io.InputStreamReader;
 public class EditableBufferedReader extends BufferedReader {
 
 	Line linia;
-	
+
 	public EditableBufferedReader(Reader in) {
 		super(in);
 		linia = new Line(getMaxCol());
 		System.out.println(getMaxCol());
+	}
+
+	public int getMaxCol() {
+
+		String[] getCol = new String[] { "sh", "-c", "tput cols < /dev/tty" }; // Only changed made: redirects input to terminal to give exact number of columns
+		try {
+			Process p = new ProcessBuilder(getCol).start();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			String maxColStr = reader.readLine();
+			reader.close();
+			return Integer.parseInt(maxColStr.trim());
+
+		} catch (Exception e) {
+			return 0;
+		}
 	}
 
 	public void setRaw() {
@@ -24,24 +39,9 @@ public class EditableBufferedReader extends BufferedReader {
 		}
 	}
 
-	public int getMaxCol() {
-
-		String[] getCol = new String[] { "sh", "-c", "tput cols < /dev/tty" };
-		try {
-			Process p = new ProcessBuilder(getCol).start();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			String maxColStr = reader.readLine();
-			reader.close();
-			return Integer.parseInt(maxColStr.trim());
-
-		} catch (Exception e) {
-			return 0;
-		}
-	}
-
 	public void unsetRaw() {
 
-		String[] cookedCom = new String[] { "sh", "-c", "stty echo cooked < /dev/tty" }; //Only changed made: redirects input to terminal to give exact number of columns
+		String[] cookedCom = new String[] { "sh", "-c", "stty echo cooked < /dev/tty" };
 
 		try {
 			Process proc = new ProcessBuilder(cookedCom).start();
