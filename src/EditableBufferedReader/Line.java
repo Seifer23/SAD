@@ -40,6 +40,7 @@ public class Line{
                 line[posX] = newChar;
                 posX++; 
             }
+            System.out.print(newChar);
         }else {
             if(posX == numChar){
                 line[posX] = newChar;
@@ -52,6 +53,8 @@ public class Line{
                 posX++;
                 numChar++;
             }
+            System.out.print("\033[1@");
+            System.out.print(newChar);
         }
     }
 
@@ -65,9 +68,12 @@ public class Line{
                 line[i] = line[i+1];
             if(posX != 0)
                 posX--;
+            System.out.print("\033[1D");
+            System.out.print("\033[1P");
         } else { //si és suprimir
             for(int i = posX; i<numChar-1; i++)
                 line[i] = line[i+1];
+            System.out.print("\033[1P");     
         }
         numChar--;
         if(posX>numChar)
@@ -108,16 +114,6 @@ public class Line{
         }
         return linia;
 
-    }
-
-    public void printLine(){
-        
-        System.out.print("\033[2K");
-        System.out.print("\r");
-        String linia = this.toString();
-        System.out.print(linia);
-        if(numChar - posX > 0)
-            System.out.print("\033["+(numChar-posX)+"D");
     }
 
     public void switchOverwrite(){

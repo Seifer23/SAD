@@ -110,9 +110,8 @@ class EditableBufferedReader extends BufferedReader{
             break;
 
           default:
-            if(charac > 0)
+            if(charac > 0 && charac != EscapeSeq.ENTER)
               linia.addChar((char) charac);
-              linia.printLine();
             break;
         }
       }
@@ -120,9 +119,7 @@ class EditableBufferedReader extends BufferedReader{
     } catch(IOException e){
       throw e;
     }
-    /*linia.move(Line.END);
-    linia.addChar((char) 13);
-    */
+
     this.unsetRaw();
     return linia.toString();
   }
