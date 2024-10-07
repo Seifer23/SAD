@@ -12,13 +12,13 @@ public class Line{
 
     public final static int LEFT = 0;
     public final static int RIGHT = 1;
-    public final static int START = 2; //start of line
-    public final static int END = 3; //end of line
+    public final static int START = 2;
+    public final static int END = 3;
 
     public Line(int maxChar) {
         
         this.maxChar = maxChar; 
-        line = new char[maxChar];//mida màxima->mida visible
+        line = new char[maxChar];
         posX = 0;
         replace = false;
 
@@ -118,10 +118,6 @@ public class Line{
 
     public void switchOverwrite(){
         replace = !replace;
-    }
-
-    public char[] getLine(){
-        return line;
     }
 
 }
