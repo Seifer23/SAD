@@ -16,7 +16,7 @@ class EditableBufferedReader extends BufferedReader{
 
   public int getMaxCol(){
 
-    String[] getCol = new String[] {"sh", "-c", "tput cols"};
+    String[] getCol = new String[] {"sh", "-c", "tput cols < /dev/tty"};
     try {
       Process p = new ProcessBuilder(getCol).start();
       BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -55,17 +55,11 @@ class EditableBufferedReader extends BufferedReader{
 
     try{
       int charac = super.read();
-      if(charac == EscapeSeq.DELETE) 
-        return -charac;
-      if(charac == EscapeSeq.CR)
-        return EscapeSeq.ENTER;
       if(charac != EscapeSeq.ESC)
         return charac;
       charac = super.read();
       if(charac == EscapeSeq.BRACKET)
-        return -super.read();  
-      else if(charac == EscapeSeq.CTLRC)
-        return EscapeSeq.ENTER;
+        return -super.read();
     }catch(IOException e){
       throw e;
     }
@@ -90,9 +84,7 @@ class EditableBufferedReader extends BufferedReader{
           case (-EscapeSeq.RIGHT):
             linia.move(Line.RIGHT);
             break;
-          case (-EscapeSeq.ENTER):
-            linia.move(Line.END);
-            break;
+          
           case(-EscapeSeq.END):
           case(-EscapeSeq.DOWN):
             linia.move(Line.END);
@@ -113,24 +105,24 @@ class EditableBufferedReader extends BufferedReader{
             linia.deleteChar(false);
             break;
           
-          case(-EscapeSeq.DELETE):
+          case(EscapeSeq.DELETE):
             linia.deleteChar(true);
             break;
 
           default:
-            if(charac > 0 && charac != 13) //CR posat manualment
+            if(charac > 0)
               linia.addChar((char) charac);
+              linia.printLine();
             break;
         }
-        linia.printLine();
       }
     } catch(IndexOutOfBoundsException ex){
     } catch(IOException e){
       throw e;
     }
-    linia.move(Line.END);
+    /*linia.move(Line.END);
     linia.addChar((char) 13);
-    linia.printLine();
+    */
     this.unsetRaw();
     return linia.toString();
   }
