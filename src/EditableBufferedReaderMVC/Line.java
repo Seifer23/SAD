@@ -114,6 +114,17 @@ public class Line extends Observable{
                 this.setChanged();
                 this.notifyObservers(new EscapeSeq(String.format(EscapeSeq.MOVE_TO, (posX+1))));
                 break;
+            default: //si el num. és negatiu (només en el cas del ratolí)
+                if(numChar != 0){
+                    if((-direction) > numChar){
+                        posX = numChar+1;
+                    } else {
+                        posX = -direction;
+                    }
+                }
+                this.setChanged();
+                this.notifyObservers(new EscapeSeq(String.format(EscapeSeq.MOVE_TO, (posX))));
+
         }
     }
 

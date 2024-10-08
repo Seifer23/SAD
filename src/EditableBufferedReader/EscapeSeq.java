@@ -20,6 +20,7 @@ public class EscapeSeq {
     public final static int BRACKET = 91; //[
     public final static int TILDE = 126; //~
     public final static int EMPTY = -1;
+    public final static int MOUSE = 60; //<
 
     //SEQ DE CONTROL
 

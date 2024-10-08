@@ -57,7 +57,7 @@ class EditableBufferedReader extends BufferedReader{
     }
   }
 
-  public int read() throws IOException{
+  public int read() throws IOException{  //activar lectura ratolí extensa (click: ^[[<XXX;YYY;ZZZm )
 
     try{
       int charac = super.read();
@@ -115,6 +115,37 @@ class EditableBufferedReader extends BufferedReader{
             linia.deleteChar(true);
             break;
 
+          case(-EscapeSeq.MOUSE)://(click: ^[[<XXX;YYY;ZZZm)
+
+            String strT = "";
+            char charM = (char) this.read();
+
+            while(charM != ';'){
+              strT += charM;
+              charM = (char) this.read();
+            }  
+
+            String strX = "";
+            charM = (char) this.read();
+            while(charM != ';'){
+              strX += charM;
+              charM = (char) this.read();
+            }
+            
+            String strY = "";
+            charM = (char) this.read();
+            while(charM != 'm' && charM != 'M'){
+              strY += charM;
+              charM = (char) this.read();
+            }
+            if(Integer.parseInt(strT) != 0 || charM == 'm'){
+              break;
+            }
+
+            linia.move(-Integer.parseInt(strX));
+            
+            break;
+          
           default:
             if(charac > 0 && charac != EscapeSeq.ENTER)
               linia.addChar((char) charac);
@@ -125,8 +156,11 @@ class EditableBufferedReader extends BufferedReader{
     } catch(IOException e){
       throw e;
     }
-
+    System.out.print("\033[?1003l"); //activar lectura ratolí
+    System.out.print("\033[?1006l"); //activar lectura ratolí extensa (click: ^[[<XXX;YYY;ZZZm )
     this.unsetRaw();
+
+    
     return linia.toString();
   }
 }

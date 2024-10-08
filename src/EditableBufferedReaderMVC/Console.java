@@ -12,6 +12,8 @@ public class Console implements Observer{
 
     public Console(Line l) {
         this.linia = l;
+        System.out.print("\033[?1003h"); //activar lectura ratolí
+        System.out.print("\033[?1006h"); //activar lectura ratolí extensa (click: ^[[<XXX;YYY;ZZZm )
     }
 
     @Override
