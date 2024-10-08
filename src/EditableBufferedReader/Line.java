@@ -83,22 +83,22 @@ public class Line{
             case LEFT: //0
                 if(posX == 0)
                     break;
-                System.out.print("\033[1D");
+                System.out.print("\033[D");
                 posX--;    
                 break;
             case RIGHT: //1
                 if(posX == numChar)
                     break;
-                System.out.print("\033[1C");   
+                System.out.print("\033[C");   
                 posX++;
                 break;
             case END:
-                System.out.print("\033["+(numChar-posX)+"C");
+                System.out.print("\033["+(numChar+1)+"G");
                 posX = numChar;
                 break;
             case START:
                 posX = 0;
-                System.out.print("\r");
+                System.out.print("\033[G");
                 break;
         }
     }
