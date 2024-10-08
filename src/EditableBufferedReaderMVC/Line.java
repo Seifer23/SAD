@@ -1,4 +1,4 @@
-package EditableBufferedReader;
+package EditableBufferedReaderMVC;
 
 public class Line{
 
