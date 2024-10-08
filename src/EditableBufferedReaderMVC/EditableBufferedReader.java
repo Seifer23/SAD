@@ -7,13 +7,17 @@ import java.io.InputStreamReader;
 
 import EditableBufferedReader.EscapeSeq;
 
+@SuppressWarnings("deprecation")
 class EditableBufferedReader extends BufferedReader{
 
   Line linia;
+  Console console;
 
   public EditableBufferedReader(Reader in){
     super(in);
     linia = new Line(getMaxCol());
+    console = new Console(linia);
+    linia.addObserver(console);
   }
 
   public int getMaxCol(){

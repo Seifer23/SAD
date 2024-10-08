@@ -1,6 +1,10 @@
 package EditableBufferedReaderMVC;
 
-public class Line{
+import EditableBufferedReader.EscapeSeq;
+import java.util.Observable;
+
+@SuppressWarnings("deprecation")
+public class Line extends Observable{
 
     private int maxChar; //mida màxima de la línia
     private boolean replace; //true si es vol sobreescriure
@@ -38,7 +42,8 @@ public class Line{
                 line[posX] = newChar;
                 posX++; 
             }
-            System.out.print(newChar);
+            this.setChanged();
+            this.notifyObservers(new EscapeSeq(""+newChar));
         }else {
             if(posX == numChar){
                 line[posX] = newChar;
@@ -51,8 +56,10 @@ public class Line{
                 posX++;
                 numChar++;
             }
-            System.out.print("\033[1@");
-            System.out.print(newChar);
+            this.setChanged();
+            this.notifyObservers(new EscapeSeq(EscapeSeq.ADD_SPACE));
+            this.setChanged();
+            this.notifyObservers(new EscapeSeq("" + newChar));
         }
     }
 
@@ -66,12 +73,15 @@ public class Line{
                 line[i] = line[i+1];
             if(posX != 0)
                 posX--;
-            System.out.print("\033[1D");
-            System.out.print("\033[1P");
+            this.setChanged();
+            this.notifyObservers(new EscapeSeq(String.format(EscapeSeq.MOVE_TO, posX)));
+            this.setChanged();
+            this.notifyObservers(new EscapeSeq(EscapeSeq.DEL_SEQ));
         } else { //si és suprimir
             for(int i = posX; i<numChar-1; i++)
                 line[i] = line[i+1];
-            System.out.print("\033[1P");     
+            this.setChanged();
+            this.notifyObservers(new EscapeSeq(EscapeSeq.DEL_SEQ));
         }
         numChar--;
         if(posX>numChar)
@@ -83,22 +93,26 @@ public class Line{
             case LEFT: //0
                 if(posX == 0)
                     break;
-                System.out.print("\033[1D");
                 posX--;    
+                this.setChanged();
+                this.notifyObservers(new EscapeSeq(String.format(EscapeSeq.MOVE_TO, (posX+1))));
                 break;
             case RIGHT: //1
                 if(posX == numChar)
-                    break;
-                System.out.print("\033[1C");   
+                    break; 
                 posX++;
+                this.setChanged();
+                this.notifyObservers(new EscapeSeq(String.format(EscapeSeq.MOVE_TO, (posX+1))));
                 break;
             case END:
-                System.out.print("\033["+(numChar-posX)+"C");
                 posX = numChar;
+                this.setChanged();
+                this.notifyObservers(new EscapeSeq(String.format(EscapeSeq.MOVE_TO, (posX+1))));
                 break;
             case START:
                 posX = 0;
-                System.out.print("\r");
+                this.setChanged();
+                this.notifyObservers(new EscapeSeq(String.format(EscapeSeq.MOVE_TO, (posX+1))));
                 break;
         }
     }

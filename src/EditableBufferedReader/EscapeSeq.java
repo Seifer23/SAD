@@ -19,9 +19,23 @@ public class EscapeSeq {
     public final static int ESC = 27; //^[
     public final static int BRACKET = 91; //[
     public final static int TILDE = 126; //~
-    public final static int CR = 13; //cr
-
-    //
     public final static int EMPTY = -1;
+
+    //SEQ DE CONTROL
+
+    public final static String MOVE_TO = "\033[%dG";
+    public final static String DEL_SEQ = "\033[P";
+    public final static String ADD_SPACE = "\033[@";
     
+    private String seq;
+
+    public EscapeSeq(String seq){
+        this.seq = seq;
+    }
+
+    @Override
+    public String toString() {
+        return seq;
+    }
+
 }
