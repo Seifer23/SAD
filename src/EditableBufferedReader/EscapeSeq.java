@@ -25,6 +25,7 @@ public class EscapeSeq {
     //SEQ DE CONTROL
 
     public final static String MOVE_TO = "\033[%dG";
+    public final static String CHANGE_LINE = "\033[%d;%dH";
     public final static String DEL_SEQ = "\033[P";
     public final static String ADD_SPACE = "\033[@";
     
