@@ -1,13 +1,12 @@
 package EditableBufferedReaderMVCMultiline;
 
-import java.util.Arrays;
 import java.util.Observable;
 import EditableBufferedReader.EscapeSeq;
 
 @SuppressWarnings("deprecation")
 public class MultiLine extends Observable{
 
-    int maxRows, maxChar, posX, currentRow, numLines;
+    int maxRows, maxChar, posX, posY, numLines;
     Line[] lines;
     boolean replace;
 
@@ -24,15 +23,15 @@ public class MultiLine extends Observable{
         this.maxChar = maxRowChar[1];
         this.lines = new Line[maxRows];
         this.replace = false;
-        this.currentRow = 0; //Array de linies: 0-maxRow  | posicions del terminal: 1-maxRow+1 :)
+        this.posY = 0; //Array de linies: 0-maxRow-1  | posicions del terminal: 1-maxRow )
         this.numLines = 1;
         this.posX = 0;
-        lines[currentRow] = new Line(maxChar);
+        lines[posY] = new Line(maxChar);
     }
 
     public void addChar(char newChar){
         try{
-            posX = lines[currentRow].addChar(newChar);
+            posX = lines[posY].addChar(newChar);
         } catch (IndexOutOfBoundsException e){
             return;
         }
@@ -45,13 +44,11 @@ public class MultiLine extends Observable{
         this.notifyObservers(new EscapeSeq(""+newChar));
     }
 
-    
-
     public void move(int direction){
         switch (direction) {
             default:
                 try{
-                    posX = lines[currentRow].move(direction);
+                    posX = lines[posY].move(direction);
                 } catch(IndexOutOfBoundsException e){
                     return;
                 }
@@ -61,103 +58,14 @@ public class MultiLine extends Observable{
         this.notifyObservers(new EscapeSeq(String.format(EscapeSeq.MOVE_TO, (posX+1))));
     }
 
-    public void changeLine(int direction){
-
-        int newNumChar;
-
-        switch (direction) {
-            case UP:
-                if(currentRow == 0)
-                    return;
-                currentRow--;
-                this.setChanged();
-                newNumChar = lines[currentRow].numChar;
-                if(newNumChar < posX){
-                    posX = newNumChar;
-                    lines[currentRow].setNumChar(posX);
-                }else{
-                    lines[currentRow].setNumChar(posX);
-                };
-                break;
-            case DOWN:
-                if(currentRow == maxRows-1 || currentRow == numLines-1){
-                    return;
-                }else{
-                    currentRow++;
-                    this.setChanged();
-                    newNumChar = lines[currentRow].numChar;
-                    if(newNumChar < posX){
-                        posX = newNumChar;
-                        lines[currentRow].setNumChar(posX);
-                    }
-                    else
-                        lines[currentRow].setNumChar(posX);
-                }   
-                break;
-        }
-
-        this.setChanged();
-        this.notifyObservers(new EscapeSeq(String.format(EscapeSeq.CHANGE_LINE, (currentRow+1), (posX+1))));
-    }
-
-    public void carriageReturn(){
-
-        if(currentRow == maxRows - 1)
-            return;
-
-        if(currentRow == numLines - 1){
-
-            try{
-                this.newLine();
-            } catch(IndexOutOfBoundsException e){
-                return;
-            }
-        }
-
-        char[] line = lines[currentRow].toString().toCharArray();
-        line = Arrays.copyOfRange(line,posX,line.length);
-
-
-        for(int i = numLines-2; i>currentRow+1; i--){
-            char[] tempChar = lines[currentRow].line;
-            lines[currentRow+1].line = tempChar;
-        }
-
-        lines[currentRow+1].line = line;
-        lines[currentRow+1].numChar = line.length;
-
-        for(int i = 0; i<line.length; i++){
-
-            this.deleteChar(false);
-            this.setChanged();
-            this.notifyObservers(new EscapeSeq(EscapeSeq.DEL_SEQ));
-        }
-
-        posX = 0;
-        currentRow++;
-        this.setChanged();
-        this.notifyObservers(new EscapeSeq(String.format(EscapeSeq.CHANGE_LINE, (currentRow+1), (posX+1))));
-
-        for(char ch : line){
-            try{
-                posX = lines[currentRow].addChar(ch);
-            } catch (IndexOutOfBoundsException e){
-                return;
-            }
-            this.setChanged();
-            this.notifyObservers(new EscapeSeq(""+ch));
-        }
-
-    }
-
     public void deleteChar(boolean delete){
 
         try{
-            posX = lines[currentRow].deleteChar(delete);
+            posX = lines[posY].deleteChar(delete);
         } catch(IndexOutOfBoundsException e){
             return;
         }
-
+        
         if(delete){
             this.setChanged();
             this.notifyObservers(new EscapeSeq(String.format(EscapeSeq.MOVE_TO, posX+1)));  
@@ -166,19 +74,114 @@ public class MultiLine extends Observable{
         this.notifyObservers(new EscapeSeq(EscapeSeq.DEL_SEQ));
     }
 
+    public void changeLine(int direction){
+
+        int newNumChar;
+
+        switch (direction) {
+            case UP:
+                if(posY == 0)
+                    return;
+                posY--;
+                this.setChanged();
+                newNumChar = lines[posY].numChar;
+                if(newNumChar < posX){
+                    posX = newNumChar;
+                    lines[posY].setNumChar(posX);
+                }else{
+                    lines[posY].setNumChar(posX);
+                };
+                break;
+            case DOWN:
+                if(posY == maxRows-1 || posY == numLines-1){
+                    return;
+                }else{
+                    posY++;
+                    this.setChanged();
+                    newNumChar = lines[posY].numChar;
+                    if(newNumChar < posX){
+                        posX = newNumChar;
+                        lines[posY].setNumChar(posX);
+                    }
+                    else
+                        lines[posY].setNumChar(posX);
+                }   
+                break;
+        }
+
+        this.setChanged();
+        this.notifyObservers(new EscapeSeq(String.format(EscapeSeq.CHANGE_LINE, (posY+1), (posX+1))));
+    }
+
+    public void changePosition(int newPosX, int newPosY){
+        
+        if(newPosX > maxChar-1) //adaptació als límits de la terminal
+            newPosX = maxChar-1;
+        if(newPosY > maxRows-1)
+            newPosY = maxRows-1;
+
+        posY = newPosY;
+
+        if(lines[posY].numChar < newPosX) //adaptació als límits de la línia
+            posX = lines[posY].numChar;
+        else
+            posX = newPosX;
+        lines[posY].posX = posX;
+
+        this.setChanged();
+        this.notifyObservers(new EscapeSeq(String.format(EscapeSeq.CHANGE_LINE, (posY+1), (posX+1))));
+        
+    }
+
+    public void carriageReturn(){
+        
+        char[] displacedChars = new char[maxChar];
+        int displacedCharsLength = 0;
+        int oldPosY = posY;
+
+        try{ //si no podem crear línia nova sortim
+            newLine();
+        } catch(IndexOutOfBoundsException e){
+            return;
+        }
+
+        if (posX<lines[posY].numChar) {
+            displacedCharsLength = lines[posY].numChar - posX;
+            for(int i = 0; i<displacedCharsLength; i++){
+                displacedChars[i] = lines[posY].line[posX+i];
+            }
+            while(lines[posY].numChar > posX)
+                this.deleteChar(false);    
+        }
+
+        for(int i = numLines-1; i>oldPosY+1; i--){
+            changePosition(0,i);
+            for(int j = 0; j<lines[i-1].numChar; j++){
+                this.addChar(lines[i-1].line[j]);
+            }
+            changePosition(0, i-1);
+            while(lines[i-1].numChar > 0)
+                this.deleteChar(false);
+        }
+
+        changePosition(0, oldPosY+1);
+        for(int i = 0; i<displacedCharsLength+1; i++){
+            this.addChar(displacedChars[i]);
+        }
+        changePosition(0, oldPosY+1);
+    }
 
     public void switchOverwrite(){
         replace = !replace;
     }
 
-
     public void newLine() throws IndexOutOfBoundsException{
 
-        if(numLines == maxRows)
+        if(this.numLines == maxRows)
             throw new IndexOutOfBoundsException();
 
         lines[numLines] = new Line(maxChar);
-        numLines++;
+        this.numLines++;
     }
 
     @Override

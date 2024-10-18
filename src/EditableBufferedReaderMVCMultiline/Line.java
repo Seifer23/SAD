@@ -4,7 +4,7 @@ public class Line{
 
     private int maxChar; //mida màxima de la línia
     private boolean replace; //true si es vol sobreescriure
-    private int posX; //posició del teclat
+    public int posX; //posició del teclat
     public char[] line; //línia guardada
     public int numChar; //número de caràcters guardats;
 
