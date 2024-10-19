@@ -117,8 +117,8 @@ public class MultiLine extends Observable{
         
         if(newPosX > maxChar-1) //adaptació als límits de la terminal
             newPosX = maxChar-1;
-        if(newPosY > maxRows-1)
-            newPosY = maxRows-1;
+        if(newPosY > numLines-1)
+            newPosY = numLines-1;
 
         posY = newPosY;
 
@@ -139,7 +139,7 @@ public class MultiLine extends Observable{
         int displacedCharsLength = 0;
         int oldPosY = posY;
 
-        try{ //si no podem crear línia nova sortim
+        try{
             newLine();
         } catch(IndexOutOfBoundsException e){
             return;

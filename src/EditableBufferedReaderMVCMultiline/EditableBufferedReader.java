@@ -45,6 +45,8 @@ class EditableBufferedReader extends BufferedReader{
       maxRowCol[0] = Integer.parseInt(strPosY);
       maxRowCol[1] = Integer.parseInt(strPosX);
       System.out.print("\033[1;1H");
+      System.out.print("\033[?1003h"); //activar lectura ratolí
+      System.out.print("\033[?1006h"); //activar lectura ratolí extensa (click: ^[[<XXX;YYY;ZZZm )
 
     } catch(IOException e){
         return null;
@@ -167,7 +169,7 @@ class EditableBufferedReader extends BufferedReader{
               break;
             }
 
-            mlinia.move(-Integer.parseInt(strX));
+            mlinia.changePosition(Integer.parseInt(strX)-1, Integer.parseInt(strY)-1);
             
             break;
           
@@ -181,7 +183,8 @@ class EditableBufferedReader extends BufferedReader{
     } catch(IOException e){
       throw e;
     }
-    
+    System.out.print("\033[?1003l"); //desactivar lectura ratolí
+    System.out.print("\033[?1006l"); //desactivar lectura ratolí extensa (click: ^[[<XXX;YYY;ZZZm )
     this.unsetRaw();
 
 
