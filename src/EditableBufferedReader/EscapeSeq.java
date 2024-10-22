@@ -28,7 +28,13 @@ public class EscapeSeq {
     public final static String CHANGE_LINE = "\033[%d;%dH";
     public final static String DEL_SEQ = "\033[P";
     public final static String ADD_SPACE = "\033[@";
-    
+    public final static String REPORT_CURSOR = "\033[6n";
+    public final static String CLEAR = "\033[2J";
+    public final static String ENABLE_MOUSE = "\033[?1003h";
+    public final static String ENABLE_MOUSE_EX ="\033[?1006h";
+    public final static String DISABLE_MOUSE = "\033[?1003l";
+    public final static String DISABLE_MOUSE_EX = "\033[?1006l";
+        
     private String seq;
 
     public EscapeSeq(String seq){

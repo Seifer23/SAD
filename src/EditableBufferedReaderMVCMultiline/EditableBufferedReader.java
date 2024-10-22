@@ -25,9 +25,9 @@ class EditableBufferedReader extends BufferedReader{
     int[] maxRowCol = {0,0};
     String strPosX = "";
     String strPosY = "";
-    System.out.print("\033[2J");
-    System.out.println("\033[9999;9999H");
-    System.out.println("\033[6n");
+    System.out.print(EscapeSeq.CLEAR);
+    System.out.println(String.format(EscapeSeq.CHANGE_LINE, 9999,9999));
+    System.out.println(EscapeSeq.REPORT_CURSOR);
     //output format: ^[[16;224R
     try{
       super.read(); //ESC
@@ -44,9 +44,9 @@ class EditableBufferedReader extends BufferedReader{
       }
       maxRowCol[0] = Integer.parseInt(strPosY);
       maxRowCol[1] = Integer.parseInt(strPosX);
-      System.out.print("\033[1;1H");
-      System.out.print("\033[?1003h"); //activar lectura ratolí
-      System.out.print("\033[?1006h"); //activar lectura ratolí extensa (click: ^[[<XXX;YYY;ZZZm )
+      System.out.println(String.format(EscapeSeq.CHANGE_LINE, 1,1));
+      System.out.print(EscapeSeq.ENABLE_MOUSE); //activar lectura ratolí
+      System.out.print(EscapeSeq.ENABLE_MOUSE_EX); //activar lectura ratolí extensa (click: ^[[<XXX;YYY;ZZZm )
 
     } catch(IOException e){
         return null;
@@ -183,8 +183,8 @@ class EditableBufferedReader extends BufferedReader{
     } catch(IOException e){
       throw e;
     }
-    System.out.print("\033[?1003l"); //desactivar lectura ratolí
-    System.out.print("\033[?1006l"); //desactivar lectura ratolí extensa (click: ^[[<XXX;YYY;ZZZm )
+    System.out.print(EscapeSeq.DISABLE_MOUSE); //desactivar lectura ratolí
+    System.out.print(EscapeSeq.DISABLE_MOUSE_EX); //desactivar lectura ratolí extensa (click: ^[[<XXX;YYY;ZZZm )
     this.unsetRaw();
 
 
