@@ -7,11 +7,8 @@ import java.io.InputStreamReader;
 
 class EditableBufferedReader extends BufferedReader{
 
-  Line linia;
-
   public EditableBufferedReader(Reader in){
     super(in);
-    linia = new Line(getMaxCol());
   }
 
   public int getMaxCol(){
@@ -68,7 +65,8 @@ class EditableBufferedReader extends BufferedReader{
 
   public String readLine() throws IOException{
 
-
+    Line linia;
+    linia = new Line(getMaxCol());
     this.setRaw(); //amaguem el input del teclat
     int charac = 0;
     try{

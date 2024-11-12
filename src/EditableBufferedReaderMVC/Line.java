@@ -9,8 +9,7 @@ public class Line extends Observable{
     private int maxChar; //mida màxima de la línia
     private boolean replace; //true si es vol sobreescriure
     private int posX; //posició del teclat
-    private char[] line; //línia guardada
-    private int numChar; //número de caràcters guardats;
+    private StringBuilder line; //línia guardada
 
     public final static int LEFT = 0;
     public final static int RIGHT = 1;
@@ -20,7 +19,7 @@ public class Line extends Observable{
     public Line(int maxChar) {
         
         this.maxChar = maxChar; 
-        line = new char[maxChar];
+        line = new StringBuilder(maxChar);
         posX = 0;
         replace = false;
 
@@ -28,115 +27,83 @@ public class Line extends Observable{
 
     public void addChar(char newChar) throws IndexOutOfBoundsException {
 
-        if(numChar == maxChar && !replace)
+        if(line.length() == maxChar && !replace)
             throw new IndexOutOfBoundsException();
         
-        if(replace){
-
-            if(posX == numChar){
-                if(numChar == maxChar)
-                    throw new IndexOutOfBoundsException();
-                line[posX] = newChar;
-                posX = numChar += 1;
-            } else{
-                line[posX] = newChar;
-                posX++; 
-            }
-            this.setChanged();
-            this.notifyObservers(new EscapeSeq(""+newChar));
-        }else {
-            if(posX == numChar){
-                line[posX] = newChar;
-                posX = numChar += 1;
-            } else {
-                for(int i = maxChar - 1; i>posX; i--){
-                    line[i] = line[i-1];
-                }
-                line[posX] = newChar;
-                posX++;
-                numChar++;
-            }
-            this.setChanged();
-            this.notifyObservers(new EscapeSeq(EscapeSeq.ADD_SPACE));
-            this.setChanged();
-            this.notifyObservers(new EscapeSeq("" + newChar));
+        if(replace && posX < line.length()) {
+            line.setCharAt(posX, newChar);
+        } else {
+            line.insert(posX, newChar);
         }
+        posX++;
+        
+        this.setChanged();
+        this.notifyObservers(new EscapeSeq("" + newChar));
     }
 
     public void deleteChar(boolean delete){
 
-        if(numChar == 0)
+        if(line.length() == 0)
             return;
 
-        if(delete){ //si es és borrar normal
-            for(int i = posX-1; i<numChar-1; i++)
-                line[i] = line[i+1];
-            if(posX != 0)
-                posX--;
+        if(delete && posX > 0) { // Borrar normal (Backspace)
+            posX--;
+            line.deleteCharAt(posX);
             this.setChanged();
-            this.notifyObservers(new EscapeSeq(String.format(EscapeSeq.MOVE_TO, posX)));
+            this.notifyObservers(new EscapeSeq(String.format(EscapeSeq.MOVE_TO, posX + 1)));
             this.setChanged();
             this.notifyObservers(new EscapeSeq(EscapeSeq.DEL_SEQ));
-        } else { //si és suprimir
-            for(int i = posX; i<numChar-1; i++)
-                line[i] = line[i+1];
+        } else if (!delete && posX < line.length()) { // Suprimir (Delete)
             this.setChanged();
             this.notifyObservers(new EscapeSeq(EscapeSeq.DEL_SEQ));
+            line.deleteCharAt(posX);
         }
-        numChar--;
-        if(posX>numChar)
-        posX=numChar;
     }
 
-    public void move(int direction){
-        switch (direction) {
-            case LEFT: //0
-                if(posX == 0)
-                    break;
-                posX--;    
-                this.setChanged();
-                this.notifyObservers(new EscapeSeq(String.format(EscapeSeq.MOVE_TO, (posX+1))));
-                break;
-            case RIGHT: //1
-                if(posX == numChar)
-                    break; 
-                posX++;
-                this.setChanged();
-                this.notifyObservers(new EscapeSeq(String.format(EscapeSeq.MOVE_TO, (posX+1))));
-                break;
-            case END:
-                posX = numChar;
-                this.setChanged();
-                this.notifyObservers(new EscapeSeq(String.format(EscapeSeq.MOVE_TO, (posX+1))));
-                break;
-            case START:
-                posX = 0;
-                this.setChanged();
-                this.notifyObservers(new EscapeSeq(String.format(EscapeSeq.MOVE_TO, (posX+1))));
-                break;
-            default: //si el num. és negatiu (només en el cas del ratolí)
-                if(numChar != 0){
-                    if((-direction) > numChar){
-                        posX = numChar+1;
-                    } else {
-                        posX = -direction;
-                    }
-                }
-                this.setChanged();
-                this.notifyObservers(new EscapeSeq(String.format(EscapeSeq.MOVE_TO, (posX))));
+    public void moveLeft() {
+        if (posX > 0) {
+            posX--;
+            this.setChanged();
+            this.notifyObservers(new EscapeSeq(String.format(EscapeSeq.MOVE_TO, (posX + 1))));
+        }
+    }
 
+    public void moveRight() {
+        if (posX < line.length()) {
+            posX++;
+            this.setChanged();
+            this.notifyObservers(new EscapeSeq(String.format(EscapeSeq.MOVE_TO, (posX + 1))));
+        }
+    }
+
+    public void moveEnd() {
+        posX = line.length();
+        this.setChanged();
+        this.notifyObservers(new EscapeSeq(String.format(EscapeSeq.MOVE_TO, (posX + 1))));
+    }
+
+    public void moveStart() {
+        posX = 0;
+        this.setChanged();
+        this.notifyObservers(new EscapeSeq(String.format(EscapeSeq.MOVE_TO, (posX + 1))));
+    }
+
+    public void move(int direction) {
+        if (direction < 0) { // si el num. és negatiu (només en el cas del ratolí)
+            if (line.length() != 0) {
+                if ((-direction) > line.length()) {
+                    posX = line.length() + 1;
+                } else {
+                    posX = -direction;
+                }
+            }
+            this.setChanged();
+            this.notifyObservers(new EscapeSeq(String.format(EscapeSeq.MOVE_TO, posX)));
         }
     }
 
     public String toString(){
-        
-        String linia = "";
-
-        for(int i = 0; i < numChar; i++){
-            linia += line[i];
-        }
-        return linia;
-
+        return line.toString();
     }
 
     public void switchOverwrite(){
