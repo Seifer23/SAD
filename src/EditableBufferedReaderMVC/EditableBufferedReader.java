@@ -10,14 +10,8 @@ import EditableBufferedReader.EscapeSeq;
 @SuppressWarnings("deprecation")
 class EditableBufferedReader extends BufferedReader{
 
-  Line linia;
-  Console console;
-
   public EditableBufferedReader(Reader in){
     super(in);
-    linia = new Line(getMaxCol());
-    console = new Console(linia);
-    linia.addObserver(console);
   }
 
   public int getMaxCol(){
@@ -74,7 +68,11 @@ class EditableBufferedReader extends BufferedReader{
 
   public String readLine() throws IOException{
 
-
+    Line linia;
+    Console console;
+    linia = new Line(getMaxCol());
+    console = new Console(linia);
+    linia.addObserver(console);
     this.setRaw(); //amaguem el input del teclat
     int charac = 0;
     try{
@@ -84,21 +82,21 @@ class EditableBufferedReader extends BufferedReader{
         
         switch (charac) {
           case (-EscapeSeq.LEFT):
-            linia.move(Line.LEFT);
+            linia.moveLeft();
             break;
           
           case (-EscapeSeq.RIGHT):
-            linia.move(Line.RIGHT);
+            linia.moveRight();
             break;
           
           case(-EscapeSeq.END):
           case(-EscapeSeq.DOWN):
-            linia.move(Line.END);
+            linia.moveEnd();
             break;
 
           case(-EscapeSeq.START):
           case(-EscapeSeq.UP):
-            linia.move(Line.START);
+            linia.moveStart();
             break;
 
           case(-EscapeSeq.INSERT):
@@ -156,11 +154,10 @@ class EditableBufferedReader extends BufferedReader{
     } catch(IOException e){
       throw e;
     }
-    System.out.print("\033[?1003l"); //activar lectura ratolí
-    System.out.print("\033[?1006l"); //activar lectura ratolí extensa (click: ^[[<XXX;YYY;ZZZm )
+    System.out.print(EscapeSeq.DISABLE_MOUSE); //activar lectura ratolí
+    System.out.print(EscapeSeq.DISABLE_MOUSE_EX); //activar lectura ratolí extensa (click: ^[[<XXX;YYY;ZZZm )
+    linia.moveStart();
     this.unsetRaw();
-
-    
     return linia.toString();
   }
 }
