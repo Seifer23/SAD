@@ -4,3 +4,4 @@ BufferedReader.java
 *.code-workspace
 /.vscode
 src/BufferedReader/
+src/EchoServer/*
