@@ -1,9 +1,7 @@
-package EditableBufferedReaderMVC;
+package EditableBufferedReader;
 
 import java.util.Observer;
 import java.util.Observable;
-
-import EditableBufferedReader.EscapeSeq;
 
 @SuppressWarnings("deprecation")
 public class Console implements Observer{

@@ -1,4 +1,4 @@
-package EditableBufferedReaderMVC;
+package EditableBufferedReader;
 
 import java.io.*;
 

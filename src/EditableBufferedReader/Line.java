@@ -1,6 +1,5 @@
-package EditableBufferedReaderMVC;
+package EditableBufferedReader;
 
-import EditableBufferedReader.EscapeSeq;
 import java.util.Observable;
 
 @SuppressWarnings("deprecation")

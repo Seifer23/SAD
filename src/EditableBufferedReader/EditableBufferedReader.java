@@ -1,11 +1,9 @@
-package EditableBufferedReaderMVC;
+package EditableBufferedReader;
 
 import java.io.Reader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
-import EditableBufferedReader.EscapeSeq;
 
 @SuppressWarnings("deprecation")
 class EditableBufferedReader extends BufferedReader{
@@ -156,7 +154,7 @@ class EditableBufferedReader extends BufferedReader{
     }
     System.out.print(EscapeSeq.DISABLE_MOUSE); //activar lectura ratolí
     System.out.print(EscapeSeq.DISABLE_MOUSE_EX); //activar lectura ratolí extensa (click: ^[[<XXX;YYY;ZZZm )
-    linia.moveStart();
+    
     this.unsetRaw();
     return linia.toString();
   }
