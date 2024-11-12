@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 @SuppressWarnings("deprecation")
-class EditableBufferedReader extends BufferedReader{
+public class EditableBufferedReader extends BufferedReader{
 
   public EditableBufferedReader(Reader in){
     super(in);
