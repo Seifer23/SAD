@@ -2,8 +2,8 @@ package ClientTextualXat;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-
-//TODO: Editar EditableBufferedReader per permetre implementar-lo i que reconegui que la posició inicial no és 0
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 //import EditableBufferedReader.EditableBufferedReader;
 import EditableBufferedReader.EscapeSeq;
@@ -16,14 +16,46 @@ public class Client {
         BufferedReader in = new BufferedReader(
             new InputStreamReader(System.in));
         System.out.print(EscapeSeq.CLEAR);
-        System.out.print("Nom d'usuari:");
+        System.out.print("Username:");
         try{
             username = in.readLine();
         } catch(Exception e){   
-            System.out.println("Error en la lectura");
+            System.out.println("Error while reading username");
         }
 
-        MySocket mySock = new MySocket("127.0.0.1", 8080, username);
+        final MySocket mySock;
+        try {
+            mySock = new MySocket(InetAddress.getByName("127.0.0.1"), 8080, username);
+        } catch (UnknownHostException e) {
+            System.out.println("Error while connecting to the server");
+            return;
+        }
+
+        Thread writeThread = new Thread(() -> {
+            try{
+                String line;
+                while ((line = in.readLine()) != null){
+                    mySock.write(line);                                        
+                }
+            }catch (Exception e){
+                System.out.println("Error while reading username");
+            }
+        });
+        writeThread.start();
+
+        Thread readThread = new Thread(() -> {
+
+            try{
+                String line;
+                while((line = mySock.read()) != null){
+                    System.out.println(line);
+                }
+            }catch(Exception e){
+                System.out.println("Error while reading ");
+            }
+        });
+
+        readThread.start();
 
     }
 }
