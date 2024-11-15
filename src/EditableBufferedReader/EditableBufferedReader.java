@@ -128,6 +128,7 @@ public class EditableBufferedReader extends BufferedReader{
               charM = (char) this.read();
             }
             
+            @SuppressWarnings("unused") 
             String strY = "";
             charM = (char) this.read();
             while(charM != 'm' && charM != 'M'){
