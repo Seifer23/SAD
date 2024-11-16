@@ -5,3 +5,5 @@ BufferedReader.java
 /.vscode
 src/BufferedReader/
 src/EchoServer/*
+*.jar
+*.MF
