@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-//import EditableBufferedReader.EditableBufferedReader;
 import EditableBufferedReader.EscapeSeq;
 
 public class Client {
