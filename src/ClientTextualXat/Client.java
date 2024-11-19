@@ -25,6 +25,8 @@ public class Client {
         final MySocket mySock;
         try {
             mySock = new MySocket(InetAddress.getByName("127.0.0.1"), 8080, username);
+            System.out.print(EscapeSeq.CLEAR);
+            System.out.println("Connectat amb el nom d'usuari " + mySock.read());
         } catch (UnknownHostException e) {
             System.out.println("Error while connecting to the server");
             return;
