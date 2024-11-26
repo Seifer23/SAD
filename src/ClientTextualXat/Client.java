@@ -26,7 +26,7 @@ public class Client {
         try {
             mySock = new MySocket(InetAddress.getByName("127.0.0.1"), 8080, username);
             System.out.print(EscapeSeq.CLEAR);
-            System.out.println("Connectat amb el nom d'usuari " + mySock.read());
+            System.out.println("Connectat amb el nom d'usuari " + mySock.read().substring(3));
         } catch (UnknownHostException e) {
             System.out.println("Error while connecting to the server");
             return;
@@ -49,7 +49,8 @@ public class Client {
             try{
                 String line;
                 while((line = mySock.read()) != null){
-                    System.out.println(line);
+                    if(line.charAt(1) == 'm')
+                      System.out.println(line.substring(3));
                 }
             }catch(Exception e){
                 System.out.println("Error while reading ");

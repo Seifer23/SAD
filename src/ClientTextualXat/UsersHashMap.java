@@ -20,15 +20,25 @@ public class UsersHashMap {
             nick = username;
         }
         userMap.put(nick, sock);
+        for(String user : userMap.keySet()){
+            userMap.get(user).write("[n]" + nick);
+        }
+        String userlist = "[u]" + nick + ",";
+        for(String user : userMap.keySet()){
+            if(!user.equals(nick))
+                userlist += user + ",";
+        }
+        userMap.get(nick).write(userlist.substring(0, userlist.length()-1)); //enviem la llista d'usuaris
+
         return nick;
     }
 
-    public void broadcast(String sender, String message){
+    public void sendMessage(String sender, String message){
 
       int senderColor = 31 + (sender.toLowerCase().charAt(0) - 'a') % 6;
         for(String user : userMap.keySet()){
             if(!user.equals(sender))
-                userMap.get(user).write("\033["+ senderColor +"m<" + sender + ">\033[0m" + message);
+                userMap.get(user).write("[m]\033["+ senderColor +"m<" + sender + ">\033[0m" + message);
         }
     }
 
@@ -36,7 +46,10 @@ public class UsersHashMap {
         userMap.get(reciever).write(message);
     }
 
-    public void removeUser(String user){
-        userMap.remove(user);
+    public void removeUser(String nick){
+        userMap.remove(nick);
+        for(String user : userMap.keySet()){
+          userMap.get(user).write("[d]"+nick);
+        }
     }
 }

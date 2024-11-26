@@ -15,15 +15,14 @@ public class Server {
                     
                     String username = sock.read();
                     String nickname = userMap.addUser(username, sock);
-                    userMap.send(nickname, nickname);
-                    System.out.println(nickname + " s'ha connectat");
+                    System.out.println("[n]" + nickname);
                     String clientText;
                     while((clientText=sock.read())!=null){
-                        userMap.broadcast(nickname,clientText);
-                        System.out.println(nickname + ": " + clientText);
+                        userMap.sendMessage(nickname,clientText);
+                        System.out.println("[m]<"+ nickname + "> " + clientText);
                     }
-                    System.out.println(nickname + " s'ha desconnectat");
-                    userMap.removeUser(username);
+                    System.out.println("[d]" + nickname);
+                    userMap.removeUser(nickname);
                     sock.close();
                 }
             }.start();

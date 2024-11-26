@@ -4,17 +4,15 @@ import socket
 def thread_lectura():
     try:
         while (msc_recv := sock.recv(1024)):
-            print(msc_recv.decode('utf-8').replace("\n", ""))
+            if(msc_recv.decode('utf-8')[1] == 'm'):
+                print(msc_recv.decode('utf-8').replace("\n", "").replace("[m]", ""))
     finally:
         sock.close()
 
 def thread_escriptura():
-    try:
-        while (msg_sent := input()):
-            msg_sent += "\n"
-            sock.send(msg_sent.encode('utf-8'))
-    finally:
-        sock.close()
+    while (msg_sent := input()):
+        msg_sent += "\n"
+        sock.send(msg_sent.encode('utf-8'))
 
 username = input("username: ") + "\n"
 
