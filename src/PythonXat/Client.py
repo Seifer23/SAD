@@ -56,8 +56,10 @@ class Window(tk.Tk):
         self.chat_frame.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
         self.chat_log = tk.Text(self.chat_frame, state="disabled", bd=0, highlightthickness=0)
         self.chat_log.pack(fill="both", expand=True, padx=5, pady=5)
+        
+        self.color_table = ["red", "green", "yellow", "blue", "magenta", "cyan"]
 
-        for color in ["red", "green", "yellow", "blue", "magenta", "cyan"]:
+        for color in self.color_table:
             self.chat_log.tag_configure(color, foreground=color)
         self.main_bframe = ttk.Frame(self.mframe)
         self.main_bframe.grid(row=1, sticky="ew", padx=5, pady=(0,5))
@@ -77,6 +79,9 @@ class Window(tk.Tk):
         
         username = self.login_input.get() + "\n"
         
+        if(username == "\n"):
+            return
+
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.connect(('127.0.0.1', 8080))
         self.sock.sendall(username.encode('utf-8'))
@@ -120,8 +125,7 @@ class Window(tk.Tk):
 
     def print_msg(self, msg):
 
-        color_table = ["red", "green", "yellow", "blue", "magenta", "cyan"]
-        color = color_table[int(re.findall(r'\[3(\d)', msg)[0])-1]
+        color = self.color_table[int(re.findall(r'\[3(\d)', msg)[0])-1]
         username = msg[msg.find('<') + 1 : msg.find('>')]
         message = msg[msg.find('0m') + 2 : ]
         self.chat_log.configure(state='normal')
