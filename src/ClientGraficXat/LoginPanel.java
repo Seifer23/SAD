@@ -23,29 +23,25 @@ import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 
 public class LoginPanel extends JPanel
-        implements ActionListener {
+                        implements ActionListener {
 
     final static String LOGINPANEL = "login_panel";
     final static String CHATPANEL = "chat_panel";
-
-    final static String CREAR = "u]";
 
     private ChatPanel chatPanelInLogin;
     private JTextField user;
     private JButton submit;
     private JLabel username; 
-    private List<String> usuariosLogeados;
     public MySocket mySocket;
-    private DefaultListModel<String> listaUsuarios;
 
     public LoginPanel(ChatPanel chatPanel) {
         super();
         chatPanelInLogin = chatPanel;
-        listaUsuarios = chatPanel.listaUsuarios;
 
         user = new JTextField(20);
         submit = new JButton("Log in");
         username = new JLabel("Username: ");
+        user.addActionListener(this);
         submit.addActionListener(this);
         
         this.add(username);
@@ -59,7 +55,6 @@ public class LoginPanel extends JPanel
             return;
         }
         initConnect(userInput);
-        new Thread(() -> RecepcionMensaje()).start();
     }
 
     private void initConnect(String userInput) {
@@ -80,7 +75,6 @@ public class LoginPanel extends JPanel
                     get(); 
                     SwingUtilities.invokeLater(() -> {
                         chatPanelInLogin.listenForMessages(mySocket); 
-                        //RESOLLVEEEEEEEEER
                         CardLayout cl = (CardLayout) getParent().getLayout();
                         cl.show(getParent(), ClientGrafic.CHATPANEL);
                     });
@@ -91,34 +85,4 @@ public class LoginPanel extends JPanel
         };
         worker.execute();
     }
-
-    private void RecepcionMensaje() {
-        String mensajeRecibido;
-        while ((mensajeRecibido = this.mySocket.read()) != null) {
-            if(mensajeRecibido.charAt(0) == 'm'){
-                this.PrintMensaje();
-            } else if(mensajeRecibido.charAt(0) == 'u'){
-                this.CrearListaUsuarios(mensajeRecibido);
-            } else{
-                this.ActualizarListaUsuarios();
-            }    
-        }
-    }
-
-    private void PrintMensaje(){
-
-    }
-
-    private void CrearListaUsuarios(String mensajeRecibido){
-   
-    }
-
-    private void ActualizarListaUsuarios(){
-
-    }
-
-    public MySocket getLoginSocket() {
-        return this.mySocket;
-    }
-
 }
