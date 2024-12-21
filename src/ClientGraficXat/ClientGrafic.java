@@ -32,19 +32,13 @@ public class ClientGrafic {
     public CardLayout cardLayout;
     private LoginPanel loginPanel;
     private ChatPanel chatPanel;
-    private MySocket mySocket;
-    private JTextArea chatArea;
 
     public ClientGrafic() {
-        myFrame = new MyFrame();
+        myFrame = new MyFrame("Chat Grafic");
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
         chatPanel = new ChatPanel();
         loginPanel = new LoginPanel(chatPanel);
-
-        mySocket = loginPanel.getLoginSocket();
-        chatArea = chatPanel.getChatArea();
-        // listenForMessages(mySocket);
     
         mainPanel.add(loginPanel,LOGINPANEL);
         mainPanel.add(chatPanel,CHATPANEL);
@@ -71,12 +65,8 @@ public class ClientGrafic {
     }
 
     class MyFrame extends JFrame {
-        public MyFrame() {
-            super();
-            try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (Exception e) {
-            }
+        public MyFrame(String titulo) {
+            super(titulo);
             JFrame.setDefaultLookAndFeelDecorated(true);
             this.setSize(750, 750);
             this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -85,4 +75,3 @@ public class ClientGrafic {
         }
     }
 }
-
