@@ -1,7 +1,9 @@
 package ClientTextualXat;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
 import java.awt.CardLayout;
@@ -31,9 +33,9 @@ import javax.swing.border.EmptyBorder;
 
 import java.awt.Dimension;
 
-public class ChatPanel extends JPanel 
-                        implements ActionListener {
-    
+public class ChatPanel extends JPanel
+        implements ActionListener {
+
     final static String MENSAJE = "\\[m\\]";
     final static String CREAR = "\\[u\\]";
     final static String AGREGAR = "\\[n\\]";
@@ -42,7 +44,7 @@ public class ChatPanel extends JPanel
     private JPanel inputPanel;
     private JSplitPane outputPanel;
     public JTextArea chatArea;
-    private JScrollPane scrollPanelChat; 
+    private JScrollPane scrollPanelChat;
     private JTextField inputMensaje;
     private JButton botonEnviar;
     public DefaultListModel<String> listaUsuarios;
@@ -51,6 +53,7 @@ public class ChatPanel extends JPanel
     private JLabel labelListaUsuarios;
     private JLabel labelChat;
     private String[] usuariosLogeados;
+    private String main_username;
     private String usuario;
     private String mensaje;
     private String color;
@@ -59,7 +62,7 @@ public class ChatPanel extends JPanel
     public ChatPanel() {
         super(new BorderLayout());
 
-        //inputPanel
+        // inputPanel
         inputPanel = new JPanel();
         inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.LINE_AXIS));
         inputMensaje = new JTextField();
@@ -70,13 +73,13 @@ public class ChatPanel extends JPanel
         inputPanel.add(botonEnviar);
         inputPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
-        //outputPanel
+        // outputPanel
         chatArea = new JTextArea();
         chatArea.setEditable(false);
         chatArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         labelChat = new JLabel("Chat", SwingConstants.LEFT);
         scrollPanelChat = new JScrollPane(chatArea);
-    
+
         listaUsuarios = new DefaultListModel<>();
         labelListaUsuarios = new JLabel("Usuarios conectados:", SwingConstants.RIGHT);
         jListUsuarios = new JList<>(listaUsuarios);
@@ -93,35 +96,36 @@ public class ChatPanel extends JPanel
         scrollPanelChat.setMinimumSize(new Dimension(200, 300));
         scrollPanelUsuarios.setPreferredSize(new Dimension(300, 300));
         scrollPanelUsuarios.setMinimumSize(new Dimension(100, 300));
-        
+
         this.add(labelChat);
         this.add(labelListaUsuarios);
-        this.add(outputPanel,BorderLayout.CENTER);
-        this.add(inputPanel,BorderLayout.SOUTH);
+        this.add(outputPanel, BorderLayout.CENTER);
+        this.add(inputPanel, BorderLayout.SOUTH);
     }
 
     public void actionPerformed(ActionEvent e) {
         String mensajeEnviar = inputMensaje.getText();
-            if (!mensajeEnviar.isEmpty()) {
-                mySocket.write(mensajeEnviar);
-                chatArea.append("<Tu>"+mensajeEnviar+"\n");
-                inputMensaje.setText("");
-            }
+        if (!mensajeEnviar.isEmpty()) {
+            mySocket.write(mensajeEnviar);
+            chatArea.append("<Tu>" + mensajeEnviar + "\n");
+            inputMensaje.setText("");
+        }
     }
 
     public void listenForMessages(MySocket mySocket) {
         new Thread(() -> {
             try {
                 this.mySocket = mySocket;
+                main_username = mySocket.getUsername();
                 String mensajeRecibido;
                 while ((mensajeRecibido = mySocket.read()) != null) {
-                    if(mensajeRecibido.charAt(1) == 'm'){
+                    if (mensajeRecibido.charAt(1) == 'm') {
                         this.PrintMensaje(mensajeRecibido);
-                    } else if(mensajeRecibido.charAt(1) == 'u'){
+                    } else if (mensajeRecibido.charAt(1) == 'u') {
                         this.CrearListaUsuarios(mensajeRecibido);
-                    } else{
+                    } else {
                         this.ActualizarListaUsuarios(mensajeRecibido);
-                    }    
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -129,14 +133,14 @@ public class ChatPanel extends JPanel
         }).start();
     }
 
-    private void PrintMensaje(String mensajeRecibido){
-        usuario = mensajeRecibido.substring(mensajeRecibido.indexOf("<")+1, mensajeRecibido.indexOf(">"));
-        mensaje = mensajeRecibido.substring(mensajeRecibido.indexOf("0m")+2);
-        chatArea.append("<"+usuario+">"+mensaje+"\n");
+    private void PrintMensaje(String mensajeRecibido) {
+        usuario = mensajeRecibido.substring(mensajeRecibido.indexOf("<") + 1, mensajeRecibido.indexOf(">"));
+        mensaje = mensajeRecibido.substring(mensajeRecibido.indexOf("0m") + 2);
+        chatArea.append("<" + usuario + ">" + mensaje + "\n");
 
     }
 
-    private void CrearListaUsuarios(String mensajeRecibido){
+    private void CrearListaUsuarios(String mensajeRecibido) {
         usuariosLogeados = mensajeRecibido.replaceFirst(CREAR, "").replaceFirst("\n", "").split(",");
         Arrays.sort(usuariosLogeados);
         SwingUtilities.invokeLater(() -> {
@@ -144,20 +148,32 @@ public class ChatPanel extends JPanel
             for (String usuario : usuariosLogeados) {
                 listaUsuarios.addElement(usuario);
             }
+            System.out.println("listadefaultcreada" + listaUsuarios);
         });
     }
 
-    private void ActualizarListaUsuarios(String mensajeRecibido){
-        if (mensajeRecibido.charAt(1) == 'n') {
-            listaUsuarios.addElement(mensajeRecibido.replaceFirst(AGREGAR, "").replaceFirst("\n", ""));
-        }
-        else {
-            String usuarioEliminar = mensajeRecibido.replaceFirst(ELIMINAR, "").replaceFirst("\n", "");
-            listaUsuarios.removeElement(usuarioEliminar);
-        }
-    }
-
-    public JTextArea getChatArea() {
-        return this.chatArea;
+    private void ActualizarListaUsuarios(String mensajeRecibido) {
+        SwingUtilities.invokeLater(() -> {
+            if (mensajeRecibido.charAt(1) == 'n') {
+                SwingUtilities.invokeLater(() -> {
+                    List<String> usuariosOrdenados = new ArrayList<>();
+                    String agregar = mensajeRecibido.replaceFirst(AGREGAR, "").replaceFirst("\n", "");
+                    for (int i = 0; i < listaUsuarios.size(); i++) {
+                        usuariosOrdenados.add(listaUsuarios.getElementAt(i));
+                    }
+                    if (!agregar.equals(main_username)) {
+                        usuariosOrdenados.add(agregar);
+                        usuariosOrdenados.sort(String::compareToIgnoreCase);              
+                        listaUsuarios.clear();
+                        for (String usuario : usuariosOrdenados) {
+                            listaUsuarios.addElement(usuario);
+                        }
+                    }
+                });
+            } else {
+                String usuarioEliminar = mensajeRecibido.replaceFirst(ELIMINAR, "").replaceFirst("\n", "");
+                listaUsuarios.removeElement(usuarioEliminar);
+            }
+        });
     }
 }
