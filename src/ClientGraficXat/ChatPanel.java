@@ -148,7 +148,6 @@ public class ChatPanel extends JPanel
             for (String usuario : usuariosLogeados) {
                 listaUsuarios.addElement(usuario);
             }
-            System.out.println("listadefaultcreada" + listaUsuarios);
         });
     }
 
@@ -161,7 +160,7 @@ public class ChatPanel extends JPanel
                     for (int i = 0; i < listaUsuarios.size(); i++) {
                         usuariosOrdenados.add(listaUsuarios.getElementAt(i));
                     }
-                    if (!agregar.equals(main_username)) {
+                    if (!usuariosOrdenados.contains(agregar)) {
                         usuariosOrdenados.add(agregar);
                         usuariosOrdenados.sort(String::compareToIgnoreCase);              
                         listaUsuarios.clear();
@@ -177,3 +176,4 @@ public class ChatPanel extends JPanel
         });
     }
 }
+
