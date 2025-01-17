@@ -1,10 +1,8 @@
 # Practicas SAD
 
-# Table of contents
-
 ## Practica 1
 
-- La primera pràctica ens demanava l’implementació del protocol de BufferedReader, afegint la capacitat de poder treballar amb seqüències d’escapament per implementar funcionalitats com pot ser la capacitat de esborrar caràcters, moure el cursor, i la possibilitat de fer el mateix amb el ratolí.
+- La primera pràctica demana l’implementació del protocol de BufferedReader, afegint la capacitat de poder treballar amb seqüències d’escapament per implementar funcionalitats com pot ser la capacitat de esborrar caràcters, moure el cursor, i la possibilitat de fer el mateix amb el ratolí.
 
 - Aquesta pràctica comptava amb 4 parts opcionals clarament marcades:
 
