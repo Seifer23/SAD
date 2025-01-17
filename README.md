@@ -77,3 +77,8 @@ La pràctica 2 consisteix en l’implementació d’un sistema client servidor p
   }
 ```
 
+
+> [!IMPORTANT]
+> Com que el nostre projecte està encarat també a la creació d'un xat, vam aprofitar el servidor i client creat en aquesta pràctica.
+> A més a més, com a pas intermig per desenvolupar el client gràfic en python, vam desenvolupar també una versió en python del client de terminal
+> que es demana en aquesta pràctica
