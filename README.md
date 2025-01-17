@@ -63,25 +63,9 @@ Tenint aquest codi complert, cal acabar desactivant la lectura del ratolí abans
     System.out.print(EscapeSeq.DISABLE_MOUSE); //activar lectura ratolí
     System.out.print(EscapeSeq.DISABLE_MOUSE_EX); //activar lectura ratolí extensa (click: ^[[<XXX;YYY;ZZZm )
 ```
-  
-  - [Practica 2]
-  - [Funciones]
-    - `-1`
-    - `-a`   (or) `--all`
 
-- [Practica 3]
-  - [Funciones]
-    - `-1`
-    - `-a`   (or) `--all`
+> [!NOTE]
+> La versió sense MVC no es troba disponible en la versió actual del projecte, doncs vam reescriure el EditableBufferedReader per fer ús de StringBuilder() en comptes d'un Array de caràcters.
 
 
-# Practica 1
-
-### Flags
-
-- With `-1` : Lists one entry per line
-
-- With `-a` (or) `--all` : Does not ignore entries starting with '.'
-
-- With `-A` (or) `--almost-all` : Does not ignore entries starting with '.', except `./` and `../`
 
