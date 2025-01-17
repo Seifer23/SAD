@@ -26,37 +26,37 @@
   ```
 Un cop activat això cal establir en [EditableBufferedReader.java](src/EditableBufferedReader/EditableBufferedReader.java) quina funció realitzarà el ratolí en un click.
 ```java
-          case(-EscapeSeq.MOUSE)://(click: ^[[<XXX;YYY;ZZZm)
+    case(-EscapeSeq.MOUSE)://(click: ^[[<XXX;YYY;ZZZm)
 
-            String strT = "";
-            char charM = (char) this.read();
+      String strT = "";
+      char charM = (char) this.read();
 
-            while(charM != ';'){
-              strT += charM;
-              charM = (char) this.read();
-            }  
+      while(charM != ';'){
+        strT += charM;
+        charM = (char) this.read();
+      }  
 
-            String strX = "";
-            charM = (char) this.read();
-            while(charM != ';'){
-              strX += charM;
-              charM = (char) this.read();
-            }
-            
-            @SuppressWarnings("unused") 
-            String strY = "";
-            charM = (char) this.read();
-            while(charM != 'm' && charM != 'M'){
-              strY += charM;
-              charM = (char) this.read();
-            }
-            if(Integer.parseInt(strT) != 0 || charM == 'm'){
-              break;
-            }
+      String strX = "";
+      charM = (char) this.read();
+      while(charM != ';'){
+        strX += charM;
+        charM = (char) this.read();
+      }
+      
+      @SuppressWarnings("unused") 
+      String strY = "";
+      charM = (char) this.read();
+      while(charM != 'm' && charM != 'M'){
+        strY += charM;
+        charM = (char) this.read();
+      }
+      if(Integer.parseInt(strT) != 0 || charM == 'm'){
+        break;
+      }
 
-            linia.move(-Integer.parseInt(strX));
-            
-            break;
+      linia.move(-Integer.parseInt(strX));
+      
+      break;
 ```
 Tenint aquest codi complert, cal acabar desactivant la lectura del ratolí abans de tancar el codi. 
 ```java
@@ -67,5 +67,13 @@ Tenint aquest codi complert, cal acabar desactivant la lectura del ratolí abans
 > [!NOTE]
 > La versió sense MVC no es troba disponible en la versió actual del projecte, doncs vam reescriure el EditableBufferedReader per fer ús de StringBuilder() en comptes d'un Array de caràcters.
 
+## Pràctica 2
 
+La pràctica 2 consisteix en l’implementació d’un sistema client servidor per poder construïr a sobre una aplicació de terminal de xat, permetent la comunicació entre dos clients. En aquesta part del projecte, vam decidir fer servir la classe ConcurrentHashMap per solventar els problemes relacionats amb l’accés concurrent a les dades del servidor.
+
+```java
+  public UsersHashMap() {
+        userMap = new ConcurrentHashMap<>();
+  }
+```
 
