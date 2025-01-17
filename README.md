@@ -3,17 +3,16 @@
 # Table of contents
 
 - [Practica 1]
-  - [Flags]
-    - `-1`
-    - `-a`   (or) `--all`
+  - [Funciones]
+   
   
   - [Practica 2]
-  - [Flags]
+  - [Funciones]
     - `-1`
     - `-a`   (or) `--all`
 
 - [Practica 3]
-  - [Flags]
+  - [Funciones]
     - `-1`
     - `-a`   (or) `--all`
 
