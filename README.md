@@ -89,9 +89,9 @@ Finalment, ens disposem a fer la implementació del client amb una interfície g
 
 La implementació fa servir 3 clases: ClientGrafic, LoginPanel y ChatPanel:
  
-ClientGrafic conté la funció main i s’encarrega de la inicialització dels components gràfics, cal recalcar que es fa servir una nested class, que es diu MyFrame i hereta de la classe JFrame, per a inicialitzar la finestra principal. El mètode constructor inicialitza els components de la interfície com el LoginPanel i el ChatPanel.
+- ClientGrafic conté la funció main i s’encarrega de la inicialització dels components gràfics, cal recalcar que es fa servir una nested class, que es diu MyFrame i hereta de la classe JFrame, per a inicialitzar la finestra principal. El mètode constructor inicialitza els components de la interfície com el LoginPanel i el ChatPanel.
 
-LoginPanel conté els elements gràfics necessaris per iniciar al xat com el user input i també conté codi per a la connexió amb el servidor-
+- LoginPanel conté els elements gràfics necessaris per iniciar al xat com el user input i també conté codi per a la connexió amb el servidor.
 
-ChatPanel conté els components descrits a la primera part de la explicació. A més, implementa un ordre alfabètic al desplegament de la llista d'usuaris.
+- ChatPanel conté els components descrits a la primera part de la explicació. A més, implementa un ordre alfabètic al desplegament de la llista d'usuaris.
 
